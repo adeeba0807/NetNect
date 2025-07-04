@@ -1,0 +1,60 @@
+POST http://localhost:9090/register
+Content-Type: application/json
+
+{
+  "username": "adeeba123",
+  "password": "strongPassword!",
+  "email": "adeeba@example.com",
+  "name": "Adeeba"
+}
+
+###
+
+POST http://localhost:9090/login
+Content-Type: application/json
+
+{
+  "email": "adeeba@example.com",
+  "password": "strongPassword!"
+}
+
+###
+
+
+GET  http://localhost:9090/get_user_and_profile
+Content-Type: application/json
+
+{
+  "token":"ec584543b2d88f21f8dbe30d026aca354261f56f2bd6955239036faee9759371"
+}
+
+###
+
+
+POST  http://localhost:9090/update_profile_data
+Content-Type: application/json
+
+{
+  "token": "ec584543b2d88f21f8dbe30d026aca354261f56f2bd6955239036faee9759371",
+  "bio": "",
+  "currentPost": "CTO",
+  "pastWork": [
+    {
+      "company": "Microsoft",
+      "position": "CTO",
+      "years": "2+"
+    }
+  ],
+  "education": [
+    {
+      "school": "IIT",
+      "degree": "B.Tech",
+      "fieldOfStudy": "2015-2019"
+    }
+  ]
+}
+
+###
+
+
+GET  http://localhost:9090/user/get_all_users
