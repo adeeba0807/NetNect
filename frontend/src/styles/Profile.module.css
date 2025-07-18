@@ -1,0 +1,81 @@
+.container {
+  border: 1px solid #eee;
+  padding: 2rem;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.header {
+  font-size: 1.8rem;
+  color: #d62c0ed4;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.infoBox {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.8;
+}
+
+.editBtn {
+  margin-top: 1rem;
+  background-color: #d62c0ed4;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.updateBtn {
+  background-color: #d62c0ed4;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background-color: #999;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

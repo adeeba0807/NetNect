@@ -1,0 +1,67 @@
+.container {
+  min-height: 100vh;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.card {
+  background-color: #d62c0ed4;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.heading {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.textarea {
+  resize: none;
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.button {
+  background-color: white;
+  color: #d62c0ed4;
+  padding: 0.75rem;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: #fbe3df;
+}
+
+.sidebar button.active {
+  background-color: white;
+  color: #d62c0ed4;
+  font-weight: bold;
+}
+
+.sidebar button:hover {
+  background-color: #fbe3df;
+  color: white;
+}
