@@ -5,39 +5,53 @@ import bcrypt from 'bcrypt';
 import PDFDocument from 'pdfkit';
 import fs from "fs";
 import mongoose from "mongoose";
+import Post from "../models/post.model.js"; 
+import Comment from "../models/comments.model.js"; // Ensure this is here too
 
 const connection = mongoose.connection;
 import ConnectionRequest from "../models/connections.model.js";
 
-const convertUserDataToPDF=async(userData)=>{
-    const doc=new PDFDocument();
+export const convertUserDataToPDF = async (userData) => {
+    const doc = new PDFDocument();
 
-
-    const outputPath=crypto.randomBytes(32).toString("hex")+".pdf";
-    const stream = fs.createWriteStream("uploads/"+outputPath);
+    const outputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
+    const stream = fs.createWriteStream("uploads/" + outputPath);
 
     doc.pipe(stream);
 
-    doc.image(`uploads/${userData.userId.profilePicture}`,{align:"center", width:100});
-    doc.fontSize(14).text(`Name:${userData.userId.name}`);
-   doc.fontSize(14).text(`Username:${userData.userId.username}`);
-   doc.fontSize(14).text(`Email:${userData.userId.email}`);
-   doc.fontSize(14).text(`Bio:${userData.bio}`);
-   doc.fontSize(14).text(`Current Position:${userData.currentPost}`);
+    // 1. ADD IMAGE GUARD: Only try to add image if it exists
+    if (userData.userId.profilePicture && fs.existsSync(`uploads/${userData.userId.profilePicture}`)) {
+        doc.image(`uploads/${userData.userId.profilePicture}`, { align: "center", width: 100 });
+        doc.moveDown(); // Add some space after the image
+    }
 
-   doc.fontSize(14).text("Past Work:")
-   userData.pastWork.forEach((work,index)=>{
-    doc.fontSize(14).text(`Company Name:${work.company}`);
-    doc.fontSize(14).text(`Position:${work.position}`);
-    doc.fontSize(14).text(`Years:${work.years}`);
-   })
+    // 2. Add Content with better spacing
+    doc.fontSize(20).text("RESUME", { align: "center" });
+    doc.moveDown();
+    
+    doc.fontSize(14).text(`Name: ${userData.userId.name}`);
+    doc.text(`Username: ${userData.userId.username}`);
+    doc.text(`Email: ${userData.userId.email}`);
+    doc.moveDown();
+    
+    doc.fontSize(16).text("Bio:", { underline: true });
+    doc.fontSize(12).text(userData.bio || "No bio provided.");
+    doc.moveDown();
 
+    doc.fontSize(16).text("Current Position:", { underline: true });
+    doc.fontSize(12).text(userData.currentPost || "Not specified");
+    doc.moveDown();
 
-   doc.end();
+    doc.fontSize(16).text("Past Work / Experience:", { underline: true });
+    if (userData.pastWork) {
+        doc.fontSize(12).text(userData.pastWork);
+    } else {
+        doc.fontSize(12).text("No experience listed.");
+    }
 
-   return outputPath;
-
-}
+    doc.end();
+    return outputPath;
+};
 
 export const register=async(req,res)=>{
     try{
@@ -63,7 +77,7 @@ export const register=async(req,res)=>{
 
             await newUser.save();
 
-            const profile=new Profile({userId:newUser._id});
+            const profile=new Profile({userId:newUser._id,bio:"",education:"",pastWork:""});
             await profile.save(); 
 return res.json({message:"User created"})
 
@@ -100,6 +114,36 @@ export const login=async(req,res)=>{
 }
 
 
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email, newPassword, confirmPassword } = req.body;
+
+        if (!email || !newPassword || !confirmPassword) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ message: "Passwords do not match" });
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.token = "";
+        await user.save();
+
+        return res.status(200).json({ message: "Password reset successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+
 export const uploadProfilePicture=async(req,res)=>{
     const {token}=req.body;
     try{
@@ -123,6 +167,7 @@ export const uploadProfilePicture=async(req,res)=>{
 }
 
 
+//This updates the User model (name, username, email).
 export const updateUserProfile=async(req,res)=>{
     try{
        const{token,...newUserData}=req.body;
@@ -173,28 +218,93 @@ export const getUserAndprofile=async(req,res)=>{
     }
 }
 
+export const searchUsers = async (req, res) => {
+    try {
+        const { q = "", token } = req.query;
+        const trimmed = q.trim();
+
+        if (trimmed.length < 2) {
+            return res.status(400).json({ message: "Search query must be at least 2 characters" });
+        }
+
+        const regex = new RegExp(trimmed, "i");
+        const searchFilter = {
+            $or: [{ name: regex }, { username: regex }, { email: regex }],
+        };
+
+        const users = await User.find(searchFilter)
+            .select("_id name username email profilePicture")
+            .limit(20);
+
+        let currentUserId = null;
+        if (token) {
+            const currentUser = await User.findOne({ token }).select("_id");
+            currentUserId = currentUser?._id?.toString() || null;
+        }
+
+        const filteredUsers = users.filter((user) => user._id.toString() !== currentUserId);
+
+        return res.json({ users: filteredUsers });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+export const getPublicProfile = async (req, res) => {
+    try {
+        const { id } = req.query;
+
+        if (!id) {
+            return res.status(400).json({ message: "User id is required" });
+        }
+
+        const userProfile = await Profile.findOne({ userId: id })
+            .populate("userId", "name email username profilePicture");
+
+        if (!userProfile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        return res.json({ profile: userProfile });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
 
 
-export const updateProfileData=async(req,res)=>{
-    try{
-        const {token, ...newProfileData}=req.body;
+//This updates the Profile model (bio, education, pastWork).
+export const updateProfileData = async (req, res) => {
+    try {
+        const { token, ...newProfileData } = req.body;
 
-        const userProfile=await User.findOne({token:token});
+        const user = await User.findOne({ token: token });
 
-if(!userProfile){
-    return res.status(404).json({message:"User not found"});
-}
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
+        // Find the profile
+        const profile_to_update = await Profile.findOne({ userId: user._id });
 
-const profile_to_update=await Profile.findOne({userId:userProfile._id});
+        if (!profile_to_update) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
 
-Object.assign(profile_to_update, newProfileData);
+        // Update the fields
+        profile_to_update.bio = newProfileData.bio || profile_to_update.bio;
+        profile_to_update.education = newProfileData.education || profile_to_update.education;
+        
+        // IMPORTANT: If your model expects an array for pastWork, 
+        // and you're sending a string, we should handle it.
+        profile_to_update.pastWork = newProfileData.pastWork; 
 
-await profile_to_update.save();
+        await profile_to_update.save();
+        
+        return res.status(200).json({ message: "Profile updated successfully" });
 
-
-    }catch(error){
-        return res.status(500).json({message:error.message})
+    } catch (error) {
+        console.error("SERVER ERROR:", error); // This shows in your terminal/cmd
+        return res.status(500).json({ message: error.message });
     }
 }
 
@@ -250,7 +360,7 @@ export const sendConnectionRequest = async(req,res)=>{
 
 
        if(existingRequest){
-       return res.status(500).json({message:"Request alrady sent"})
+       return res.status(200).json({message:"Request alrady sent"})
        }
 
        const request=new ConnectionRequest({
@@ -260,7 +370,7 @@ export const sendConnectionRequest = async(req,res)=>{
 
 
        await request.save();
-        return res.status(500).json({message:"Request sent"})
+        return res.status(200).json({message:"Request sent"})
     }catch(err){
         return res.status(500).json({message:err.message})
 
@@ -269,7 +379,7 @@ export const sendConnectionRequest = async(req,res)=>{
 
 
 export const getMyConnectionRequests=async(req,res)=>{
-    const {token} = req.body;
+    const {token} = req.query;
     try{
         const user=await User.findOne({token});
 
@@ -288,7 +398,7 @@ export const getMyConnectionRequests=async(req,res)=>{
 
 
 export const whatAreMyConnections=async(req,res)=>{
-       const {token}=req.body;
+       const {token}=req.query;
 
 
        try{
@@ -348,41 +458,28 @@ export const acceptConnectionRequest=async(req,res)=>{
 }
 
 
-export const commentPost=async(req,res)=>{
-    const {token,post_id,commentBody}=req.body;
+export const commentPost = async (req, res) => {
+    const { token, post_id, commentBody } = req.body;
 
-    try{
-         const user=await User.findOne({token:token}).select("_id");
+    try {
+        const user = await User.findOne({ token: token }).select("_id");
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        
-           if(!user){
-            return res.status(404).json({message:"User not found"})
-        }
+        // FIX: Renamed variable to 'targetPost' to avoid conflict with 'Post' model
+        const targetPost = await Post.findOne({ _id: post_id });
 
+        if (!targetPost) return res.status(404).json({ message: "Post not found" });
 
-        const post=await post.findOne({
-            _id:post_id
+        const newComment = new Comment({
+            userId: user._id,
+            postId: post_id,
+            body: commentBody
         });
 
-
-        if(!post){
-            return res.status(404).json({message:"Post not found"})
-        }
-
-        const comment=new Comment({
-            userId:user._id,
-            postId:post_id,
-            comment:commentBody
-        });
-
-
-
-        await comment.save();
-
-
-
-        return res.status(200).json({message:"Comment Added"})
-    }catch(err){
-         return res.status(500).json({message:err.message});
+        await newComment.save();
+        return res.status(200).json({ message: "Comment Added" });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err.message });
     }
-}
+};

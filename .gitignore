@@ -1,0 +1,22 @@
+# env/secrets
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# build output
+frontend/dist/
+frontend/dist-ssr/
+backend/dist/
+coverage/
+
+# logs
+*.log
+logs/

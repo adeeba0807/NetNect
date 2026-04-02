@@ -1,0 +1,419 @@
+/* src/App.css */
+:root {
+  /* Deep Midnight Theme */
+  --bg-dark: #020617; 
+  --glass-bg: rgba(15, 23, 42, 0.8); /* Darker glass for better contrast */
+  --accent-blue: #a855f7; /* Changed to a Creative Purple/Violet */
+  --accent-cyan: #22d3ee; /* Electric Cyan for secondary highlights */
+  --text-main: #f8fafc; /* Crisp White for readability */
+  --text-dim: #94a3b8; 
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+}
+
+.auth-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top right, #1e1b4b, #020617);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 30px;
+  width: 400px;
+  text-align: center;
+  /* Creative Neon Border */
+  border: 1px solid rgba(168, 85, 247, 0.3); 
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 85, 247, 0.1);
+}
+
+.netnect-logo {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #38bdf8, #7c3aed);
+  box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.netnect-logo span {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.netnect-input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.netnect-input:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.2);
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  /* Creative Gradient Button */
+  background: linear-gradient(90deg, #38bdf8, #7c3aed);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.4);
+}
+
+/* Dashboard Specific Styling */
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.post-card {
+  background: #0f172a;
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 24px;
+  /* Instead of a boring box, we add a creative accent line */
+  border-left: 4px solid var(--accent-cyan); 
+  margin-bottom: 25px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.post-user-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px; /* Squircle looks more creative than a circle */
+  margin-right: 15px;
+  object-fit: cover;
+  border: 2px solid var(--accent-cyan);
+}
+
+.post-media-img {
+  width: 100%;
+  border-radius: 16px;
+  margin-top: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.interaction-bar {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+}
+
+.vibe-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent-cyan);
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.vibe-btn:hover {
+  background: var(--accent-cyan);
+  color: #020617;
+}
+
+.sidebar-sticky {
+  position: sticky;
+  top: 40px;
+  height: fit-content;
+}
+
+/* Profile & Network Specific Styling */
+
+.profile-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.profile-header-card {
+  /* High-end Gradient Header */
+  background: linear-gradient(135deg, #1e1b4b 0%, #020617 100%);
+  padding: 40px;
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.profile-avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 30px;
+  border: 4px solid var(--accent-cyan);
+  object-fit: cover;
+  transform: rotate(-3deg); /* Slight tilt for "Creative" look */
+}
+
+.network-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.connection-card {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: 0.3s;
+}
+
+.connection-card:hover {
+  border-color: var(--accent-cyan);
+  transform: scale(1.02);
+}
+
+.edit-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #0f172a;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+
+
+/* Discover Creators */
+
+
+/* --- DISCOVER CREATORS SPECIFIC --- */
+
+.creator-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 16px;
+  transition: background 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.creator-row:hover {
+  background: rgba(168, 85, 247, 0.1); /* Subtle purple glow on hover */
+}
+
+.creator-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1.5px solid var(--accent-cyan);
+}
+
+.creator-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: left;
+  flex: 1;
+  margin-left: 12px;
+}
+
+.connect-mini-btn {
+  background: transparent;
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.connect-mini-btn:hover {
+  background: var(--accent-cyan);
+  color: #020617;
+}
+
+/* Ensure textareas don't look weird */
+textarea.netnect-input {
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* A little hover effect for the 'Add Media' label */
+label:hover {
+    color: var(--accent-cyan) !important;
+}
+
+
+
+/* //comment */
+
+/* Comment Section Layout */
+.comment-input-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    align-items: center;
+}
+
+.comment-send-btn {
+    width: 80px !important;
+    margin-top: 0 !important;
+    padding: 10px !important;
+    height: 42px; /* Matches the height of netnect-input */
+}
+
+/* Optional: Style the profile pictures in the feed */
+.post-user-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 12px;
+    border: 2px solid var(--accent-cyan);
+}
+
+
+
+
+/* Container Card */
+.suggestions-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+}
+
+.suggestions-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #38bdf8; /* accent-cyan */
+    text-align: left;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+    font-weight: 600;
+}
+
+.suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Individual Row */
+.creator-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.creator-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.creator-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.creator-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.creator-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f8fafc;
+    line-height: 1.2;
+}
+
+.creator-handle {
+    font-size: 0.75rem;
+    color: #38bdf8;
+}
+
+/* Connect Button */
+.connect-mini-btn {
+    background: transparent;
+    border: 1px solid #38bdf8;
+    color: #38bdf8;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.connect-mini-btn:hover {
+    background: #38bdf8;
+    color: #0f172a;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+.no-suggestions {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-align: left;
+    font-style: italic;
+}

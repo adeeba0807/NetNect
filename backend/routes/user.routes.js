@@ -1,7 +1,9 @@
 import {Router} from "express";
-import { acceptConnectionRequest, downloadProfile, getAllUserProfile, getMyConnectionRequests, getUserAndprofile, login,register,sendConnectionRequest,updateProfileData,updateUserProfile,uploadProfilePicture, whatAreMyConnections} from "../controllers/user.controller.js";
+import { acceptConnectionRequest, downloadProfile, forgotPassword, getAllUserProfile, getMyConnectionRequests, getPublicProfile, getUserAndprofile, login,register,searchUsers,sendConnectionRequest,updateProfileData,updateUserProfile,uploadProfilePicture, whatAreMyConnections} from "../controllers/user.controller.js";
 
 import multer from "multer";
+import crypto from "crypto";
+import path from "path";
 
 
 const router=Router();
@@ -11,7 +13,8 @@ const storage=multer.diskStorage({
         cb(null,'uploads/')
     },
     filename:(req,file,cb)=>{
-        cb(null,file.originalname)
+        const uniqueName = `${crypto.randomBytes(16).toString("hex")}${path.extname(file.originalname)}`;
+        cb(null, uniqueName)
     }
 });
 
@@ -24,8 +27,11 @@ router.route("/update_profile_picture")
 
 router.route('/register').post(register);
 router.route('/login').post(login);
+router.route('/forgot_password').post(forgotPassword);
 router.route('/user_update').post(updateUserProfile);
 router.route("/get_user_and_profile").get(getUserAndprofile);
+router.route("/search_users").get(searchUsers);
+router.route("/public_profile").get(getPublicProfile);
 router.route("/update_profile_data").post(updateProfileData);
 router.route("/get_all_users").get(getAllUserProfile);
 router.route("/user/download_resume").get(downloadProfile);

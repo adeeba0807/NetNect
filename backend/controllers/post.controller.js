@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from 'bcrypt';
 import Profile from "../models/profile.model.js";
 import Post from "../models/post.model.js";
+import Comment from "../models/comments.model.js";
 
 
 
@@ -14,7 +15,8 @@ export const activeCheck=async(req,res)=>{
 
 
 export const createPost=async(req,res)=>{
-    const{token}=req.body;
+    const token = req.body.token;
+    const bodyText = req.body.body;
 
 
     try{
@@ -22,15 +24,15 @@ export const createPost=async(req,res)=>{
 
 
         if(!user){
-            return res.status(404).json({message:"User nnot found"})
+            return res.status(404).json({message:"User not found"})
         }
 
 
         const post=new Post({
            userId:user._id,
-           ...req.body.body,
-           media:req.file != undefined ? req.file.filename:"",
-           fileType:req.file != undefined?req.file.mimetype.split("/"):""
+           body: bodyText,
+           media: req.file ? req.file.filename : "",
+            fileType: req.file ? req.file.mimetype.split("/")[0] : ""
         });
 
         await post.save();
@@ -38,6 +40,7 @@ export const createPost=async(req,res)=>{
         return res.status(200).json({message:"Post Created"})
 
     }catch(error){
+        console.error("DETAILED ERROR:", error.message);
            return res.status(500).json({message:error.message});
     }
 }
@@ -56,6 +59,23 @@ export const getAllPosts=async(req,res)=>{
        }
 
 }
+
+
+export const getPostsByUser = async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        if (!userId) {
+            return res.status(400).json({ message: "userId is required" });
+        }
+
+        const posts = await Post.find({ userId }).populate('userId', 'name username email profilePicture');
+
+        return res.json({ posts });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
 
 
 export const deletePost=async(req,res)=>{
@@ -92,19 +112,19 @@ export const deletePost=async(req,res)=>{
 
 
 export const get_comments_by_post=async(req,res)=>{
-    const{post_id}=req.body;
+    const { post_id } = req.query;
 
 
     try{
-        const post=await Post.findOne({_id:post_id});
-
-
-        if(!post){
-            return res.status(404).json({message:"Post not found"})
+        if (!post_id) {
+            return res.status(400).json({ message: "post_id is required" });
         }
 
+        const comments = await Comment.find({ postId: post_id })
+            .populate('userId', 'name username email profilePicture')
+            .sort({ _id: -1 });
 
-        return res.json({comments:post.comments})
+        return res.json({ comments });
     }catch(err){
         return res.status(500).json({message:err.message})
    

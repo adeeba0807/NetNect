@@ -48,12 +48,12 @@ const ProfileSchema=new mongoose.Schema({
         default:''
     },
     pastWork:{
-        type:[workSchema],
-        default:[]
+        type:String,
+        default:""
     },
-    eduaction:{
-        type:[educationSchema],
-        default:[]
+    education:{
+        type:String,
+        default:''
     }
 
 });
